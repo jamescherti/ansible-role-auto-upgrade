@@ -1,21 +1,21 @@
 ---
 
-- name: Fail Operating system not supported
-  when: ansible_os_family != "Debian" and ansible_os_family != "Archlinux"
+- name: Fail if operating system is not supported
+  when: ansible_os_family not in ["Debian", "Archlinux"]
   ansible.builtin.fail:
-    msg: "Operating system not supported"
+    msg: "Operating system family not supported: {{ ansible_os_family }}"
 
 - name: "Upgrade script: Debian family"
   when: ansible_os_family == "Debian"
   block:
     - name: "Delete {{ auto_upgrade_script }}"
-      when: not auto_upgrade_debian_unattended_upgrades | bool
+      when: auto_upgrade_debian_unattended_upgrades | bool
       ansible.builtin.file:
         path: "{{ auto_upgrade_script }}"
         state: absent
 
-    - name: "File {{ auto_upgrade_script }}"
-      when: auto_upgrade_debian_unattended_upgrades | bool
+    - name: "Install {{ auto_upgrade_script }}"
+      when: not auto_upgrade_debian_unattended_upgrades | bool
       ansible.builtin.copy:
         dest: "{{ auto_upgrade_script }}"
         src: "{{ role_path }}/files/debian-auto-upgrade.sh"
@@ -27,30 +27,29 @@
 - name: "Alternative: unattended-upgrades"
   when: ansible_os_family == "Debian"
   block:
-    - name: "Apt-get install unattended-upgrades"
+    - name: "Install unattended-upgrades"
       ansible.builtin.apt:
+        name: unattended-upgrades
         state: "{{ 'present' if auto_upgrade_debian_unattended_upgrades | bool else 'absent' }}"
-        name:
-          - unattended-upgrades
 
-    - name: "File: /etc/apt/apt.conf.d/20auto-upgrades"
+    - name: "Configure unattended-upgrades: /etc/apt/apt.conf.d/50unattended-upgrades"
       when: auto_upgrade_debian_unattended_upgrades | bool
       ansible.builtin.copy:
         dest: "/etc/apt/apt.conf.d/20auto-upgrades"
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
         content: |
           APT::Periodic::Update-Package-Lists "1";
           APT::Periodic::Unattended-Upgrade "1";
 
-    - name: "File: /etc/apt/apt.conf.d/50unattended-upgrades"
+    - name: "Configure unattended-upgrades: /etc/apt/apt.conf.d/50unattended-upgrades"
       when: auto_upgrade_debian_unattended_upgrades | bool
       ansible.builtin.copy:
         dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
         content: |
           Unattended-Upgrade::Origins-Pattern {
                 "origin=Debian,codename=${distro_codename}";
