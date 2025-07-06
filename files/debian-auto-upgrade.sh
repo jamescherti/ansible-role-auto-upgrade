@@ -23,6 +23,11 @@ wait_for_successful_apt_update() {
   done
 }
 
+run() {
+  echo "[RUN]" "$@"
+  "$@"
+}
+
 main() {
   trap "error_handler" ERR
   set -o errtrace
@@ -30,11 +35,9 @@ main() {
   export DEBIAN_FRONTEND=noninteractive
 
   wait_for_successful_apt_update
-
-  apt-get update
-  apt-get upgrade -y
-  apt-get autoremove --purge -y
-  apt-get clean -y
+  run apt-get upgrade -y
+  run apt-get autoremove --purge -y
+  run apt-get clean -y
 }
 
 main "$@"
