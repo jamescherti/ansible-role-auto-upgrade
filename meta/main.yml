@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: apt-upgrade
+  author: James Cherti
+  description: Ansible role for automated upgrades of Debian-based systems (e.g., Ubuntu, Debian, Linux Mint).
+  license: MIT
+  min_ansible_version: 1.2
+  galaxy_tags: []
+
+dependencies: []
