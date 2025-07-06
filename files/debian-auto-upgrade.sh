@@ -10,22 +10,23 @@ error_handler() {
   exit "${errno}"
 }
 
+run() {
+  echo "[RUN]" "$@"
+  "$@" 2>&1 || return "$?"
+  echo
+}
+
 wait_for_successful_apt_update() {
   # 720 minutes = 12 hours
   local i
   for ((i = 0; i < 720; i++)); do
-    if apt-get update 2>&1; then
+    if run apt-get update; then
       break
     else
       echo "No Internet connection. Wait 1 minute..."
       sleep 60
     fi
   done
-}
-
-run() {
-  echo "[RUN]" "$@"
-  "$@"
 }
 
 main() {
