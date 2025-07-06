@@ -1,6 +1,11 @@
-# auto-upgrade - Ansible role for automated upgrades of Debian-based systems (e.g., Ubuntu, Debian, Linux Mint).
+# auto-upgrade - Ansible role for automated upgrades of Linux systems
 
-The *auto-upgrade* Ansible role automates regular upgrades of Debian-based systems (e.g., Ubuntu, Debian, Linux Mint). (It provides a minimal alternative to [unattended-upgrades](https://wiki.debian.org/UnattendedUpgrades) for applying system updates.)
+The *auto-upgrade* Ansible role automates regular upgrades of
+
+Supported operating systems:
+- Debian-based systems (e.g., Ubuntu, Debian, Linux Mint). This role provides a simpler alternative to [unattended-upgrades](https://wiki.debian.org/UnattendedUpgrades) for applying system updates.
+
+(In future versions, Arch Linux and Gentoo will also be supported.)
 
 ## License
 
