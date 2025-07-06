@@ -25,6 +25,17 @@
         group: root
         mode: "0755"
 
+    - name: "File {{ auto_upgrade_cron_script }}"
+      when: not auto_upgrade_debian_unattended_upgrades | bool and auto_upgrade_cron_script != ""
+      ansible.builtin.copy:
+        dest: "{{ auto_upgrade_cron_script }}"
+        owner: root
+        group: root
+        mode: "0755"
+        content: |
+          #!/bin/sh
+          {{ auto_upgrade_script }}
+
 # This is disabled by default: unattended-upgrades
 - name: "Alternative: unattended-upgrades"
   when: ansible_os_family == "Debian"

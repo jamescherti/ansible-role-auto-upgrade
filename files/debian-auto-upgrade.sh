@@ -14,7 +14,7 @@ wait_for_successful_apt_update() {
   # 720 minutes = 12 hours
   local i
   for ((i = 0; i < 720; i++)); do
-    if apt-get update >/dev/null 2>&1; then
+    if apt-get update 2>&1; then
       break
     else
       echo "No Internet connection. Wait 1 minute..."

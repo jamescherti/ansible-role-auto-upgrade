@@ -2,6 +2,11 @@
 
 auto_upgrade_script: /usr/local/bin/auto-upgrade
 
+# Installs a cron job to run auto_upgrade_script periodically.
+#
+# Set auto_upgrade_cron_script to an empty string to disable the cron job.
+auto_upgrade_cron_script: /etc/cron.daily/60-auto-upgrade
+
 # Set auto_upgrade_debian_use_unattended_upgrades to true to enable the Debian
 # unattended-upgrades package instead of using the custom upgrade script
 # provided by this Ansible role.
