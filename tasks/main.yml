@@ -34,7 +34,7 @@
         mode: "0755"
         content: |
           #!/bin/sh
-          {{ auto_upgrade_script }}
+          exec {{ auto_upgrade_script }}
 
 # This is disabled by default: unattended-upgrades
 - name: "Alternative: unattended-upgrades"
