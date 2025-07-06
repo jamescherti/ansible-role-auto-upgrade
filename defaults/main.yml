@@ -1,3 +1,8 @@
 ---
 
 auto_upgrade_script: /usr/local/bin/auto-upgrade
+
+# Set auto_upgrade_debian_use_unattended_upgrades to true to enable the Debian
+# unattended-upgrades package instead of using the custom upgrade script
+# provided by this Ansible role.
+auto_upgrade_debian_unattended_upgrades: false
