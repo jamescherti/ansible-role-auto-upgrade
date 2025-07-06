@@ -1,6 +1,6 @@
 # apt-upgrade - Ansible role for automated upgrades of Debian-based systems (e.g., Ubuntu, Debian, Linux Mint).
 
-Ansible role for automated upgrades of Debian-based systems (e.g., Ubuntu, Debian, Linux Mint). (It provides a minimal alternative to [unattended-upgrades](https://wiki.debian.org/UnattendedUpgrades) for applying system updates.)
+The *apt-upgrade* Ansible role automates regular upgrades of Debian-based systems (e.g., Ubuntu, Debian, Linux Mint). (It provides a minimal alternative to [unattended-upgrades](https://wiki.debian.org/UnattendedUpgrades) for applying system updates.)
 
 ## License
 
