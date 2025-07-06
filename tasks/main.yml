@@ -1,7 +1,9 @@
 ---
 
 - name: Fail if operating system is not supported
-  when: ansible_os_family not in ["Debian", "Archlinux"]
+  when: ansible_os_family not in ["Debian"]
+  # TODO:
+  # when: ansible_os_family not in ["Debian", "Archlinux"]
   ansible.builtin.fail:
     msg: "Operating system family not supported: {{ ansible_os_family }}"
 
