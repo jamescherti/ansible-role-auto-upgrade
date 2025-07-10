@@ -15,5 +15,8 @@ auto_upgrade_debian_unattended_upgrades: false
 # Additionally perform `apt-get dist-upgrade` after the standard upgrade
 auto_upgrade_debian_apt_dist_upgrade: false
 
+# Additionally perform `apt-get autoremove` after the standard upgrade
+auto_upgrade_debian_apt_autoremove: false
+
 # Additionally perform `apt-get clean` after the standard upgrade
 auto_upgrade_debian_apt_clean: true
