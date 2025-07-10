@@ -7,6 +7,25 @@
   ansible.builtin.fail:
     msg: "Operating system family not supported: {{ ansible_os_family }}"
 
+- name: Delete /etc/cron.daily/60-auto-upgrade
+  when: auto_upgrade_cron_script != "/etc/cron.daily/60-auto-upgrade"
+  ansible.builtin.file:
+    path: /etc/cron.daily/60-auto-upgrade
+    state: absent
+
+- name: File /etc/auto-upgrade.conf
+  ansible.builtin.copy:
+    dest: /etc/auto-upgrade.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {% if ansible_os_family == "Debian" -%}
+      DEBIAN_APT_DIST_UPGRADE={{ '1' if auto_upgrade_debian_apt_dist_upgrade else '0' }}
+      DEBIAN_APT_AUTOREMOVE={{ '1' if auto_upgrade_debian_apt_autoremove else '0' }}
+      DEBIAN_APT_CLEAN={{ '1' if auto_upgrade_debian_apt_clean else '0' }}
+      {% endif %}
+
 - name: "Upgrade script: Debian family"
   when: ansible_os_family == "Debian"
   block:
