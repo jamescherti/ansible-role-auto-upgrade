@@ -40,13 +40,16 @@ main() {
 
   wait_for_successful_apt_update
   run apt-get upgrade -y
+
   if [[ $DEBIAN_APT_DIST_UPGRADE -ne 0 ]]; then
     run apt-get dist-upgrade -y
   fi
+
   if [[ $DEBIAN_APT_AUTOREMOVE -ne 0 ]]; then
     run apt-get autoremove --purge -y
   fi
-  if [[ $DEBIAN_APT_CLEAN -ne 0 ]]; then
+
+  if [[ $CLEAN_PACKAGES -ne 0 ]]; then
     run apt-get clean -y
   fi
 }

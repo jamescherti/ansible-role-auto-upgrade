@@ -1,9 +1,7 @@
 ---
 
 - name: Fail if operating system is not supported
-  when: ansible_os_family not in ["Debian"]
-  # TODO:
-  # when: ansible_os_family not in ["Debian", "Archlinux"]
+  when: ansible_os_family not in ["Debian", "Archlinux"]
   ansible.builtin.fail:
     msg: "Operating system family not supported: {{ ansible_os_family }}"
 
@@ -20,138 +18,29 @@
     group: root
     mode: "0644"
     content: |
+      # Clean the packages in /var/cache/
+      CLEAN_PACKAGES={{ '1' if auto_upgrade_clean else '0' }}
+
       {% if ansible_os_family == "Debian" -%}
       DEBIAN_APT_DIST_UPGRADE={{ '1' if auto_upgrade_debian_apt_dist_upgrade else '0' }}
       DEBIAN_APT_AUTOREMOVE={{ '1' if auto_upgrade_debian_apt_autoremove else '0' }}
-      DEBIAN_APT_CLEAN={{ '1' if auto_upgrade_debian_apt_clean else '0' }}
       {% endif %}
 
-- name: "Upgrade script: Debian family"
+- name: "File {{ auto_upgrade_cron_script }}"
+  when: auto_upgrade_cron_script != "" and (ansible_os_family != "Debian" or not auto_upgrade_debian_unattended_upgrades | bool)
+  ansible.builtin.copy:
+    dest: "{{ auto_upgrade_cron_script }}"
+    owner: root
+    group: root
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      exec {{ auto_upgrade_script }} >/dev/null
+
+- name: Import Tasks from debian.yaml
   when: ansible_os_family == "Debian"
-  block:
-    - name: "Delete {{ auto_upgrade_script }}"
-      when: auto_upgrade_debian_unattended_upgrades | bool
-      ansible.builtin.file:
-        path: "{{ auto_upgrade_script }}"
-        state: absent
+  ansible.builtin.import_tasks: "debian.yaml"
 
-    - name: "Install {{ auto_upgrade_script }}"
-      when: not auto_upgrade_debian_unattended_upgrades | bool
-      ansible.builtin.copy:
-        dest: "{{ auto_upgrade_script }}"
-        src: "{{ role_path }}/files/debian-auto-upgrade.sh"
-        owner: root
-        group: root
-        mode: "0755"
-
-    - name: "File {{ auto_upgrade_cron_script }}"
-      when: not auto_upgrade_debian_unattended_upgrades | bool and auto_upgrade_cron_script != ""
-      ansible.builtin.copy:
-        dest: "{{ auto_upgrade_cron_script }}"
-        owner: root
-        group: root
-        mode: "0755"
-        content: |
-          #!/bin/sh
-          exec {{ auto_upgrade_script }} >/dev/null
-
-# This is disabled by default: unattended-upgrades
-- name: "Alternative: unattended-upgrades"
-  when: ansible_os_family == "Debian"
-  block:
-    - name: "Install unattended-upgrades"
-      ansible.builtin.apt:
-        name: unattended-upgrades
-        state: "{{ 'present' if auto_upgrade_debian_unattended_upgrades | bool else 'absent' }}"
-
-    - name: "Configure unattended-upgrades: /etc/apt/apt.conf.d/50unattended-upgrades"
-      when: auto_upgrade_debian_unattended_upgrades | bool
-      ansible.builtin.copy:
-        dest: "/etc/apt/apt.conf.d/20auto-upgrades"
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          APT::Periodic::Update-Package-Lists "1";
-          APT::Periodic::Unattended-Upgrade "1";
-
-    - name: "Configure unattended-upgrades: /etc/apt/apt.conf.d/50unattended-upgrades"
-      when: auto_upgrade_debian_unattended_upgrades | bool
-      ansible.builtin.copy:
-        dest: "/etc/apt/apt.conf.d/50unattended-upgrades"
-        owner: root
-        group: root
-        mode: "0644"
-        content: |
-          Unattended-Upgrade::Origins-Pattern {
-                "origin=Debian,codename=${distro_codename}";
-                "origin=Debian,codename=${distro_codename}-updates";
-                "origin=Debian,codename=${distro_codename},label=Debian";
-                "origin=Debian,codename=${distro_codename},label=Debian-Security";
-                "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
-          };
-
-          // Note that unattended-upgrades detects this option, and ensures that
-          // packages with configuration prompts will never be held back.
-          Dpkg::Options {"--force-confold"};
-
-          // This option allows you to control if on a unclean dpkg exit
-          // unattended-upgrades will automatically run
-          //   dpkg --force-confold --configure -a
-          // The default is true, to ensure updates keep getting installed
-          Unattended-Upgrade::AutoFixInterruptedDpkg "true";
-
-          // Send email to this address for problems or packages upgrades
-          // If empty or unset then no email is sent, make sure that you
-          // have a working mail setup on your system. A package that provides
-          // 'mailx' must be installed. E.g. "user@example.com"
-          Unattended-Upgrade::Mail "root";
-
-          // Set this value to one of:
-          //    "always", "only-on-error" or "on-change"
-          // If this is not set, then any legacy MailOnlyOnError (boolean) value
-          // is used to chose between "only-on-error" and "on-change"
-          Unattended-Upgrade::MailReport "only-on-error";
-
-          // Remove unused automatically installed kernel-related packages
-          // (kernel images, kernel headers and kernel version locked tools).
-          //Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
-
-          // Do automatic removal of newly unused dependencies after the upgrade
-          Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
-
-          // Do automatic removal of unused packages after the upgrade
-          // (equivalent to apt-get autoremove)
-          Unattended-Upgrade::Remove-Unused-Dependencies "false";
-
-          Unattended-Upgrade::InstallOnShutdown "false";
-
-          // Automatically reboot *WITHOUT CONFIRMATION* if
-          //  the file /var/run/reboot-required is found after the upgrade
-          //Unattended-Upgrade::Automatic-Reboot "false";
-
-          // Automatically reboot even if there are users currently logged in
-          // when Unattended-Upgrade::Automatic-Reboot is set to true
-          //Unattended-Upgrade::Automatic-Reboot-WithUsers "true";
-
-          // If automatic reboot is enabled and needed, reboot at the specific
-          // time instead of immediately
-          //  Default: "now"
-          //Unattended-Upgrade::Automatic-Reboot-Time "02:00";
-
-          // Use apt bandwidth limit feature, this example limits the download
-          // speed to 70kb/sec
-          //Acquire::http::Dl-Limit "70";
-
-          // Unattended-Upgrade::Package-Blacklist {
-          //       "linux-headers-amd64";
-          //       "linux-image-amd64";
-          //       "linux-generic";
-          //       "linux-headers";
-          //       "linux-headers-generic";
-          //       "linux-image";
-          //       "linux-image-generic";
-          //       "linux-modules";
-          //       "linux-modules-extra-generic";
-          //       "linux-modules-generic";
-          // };
+- name: Import Tasks from archlinux.yaml
+  when: ansible_os_family == "Archlinux"
+  ansible.builtin.import_tasks: "archlinux.yaml"

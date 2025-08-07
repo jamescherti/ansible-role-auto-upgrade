@@ -1,0 +1,11 @@
+---
+
+- name: "Upgrade script: Archlinux family"
+  block:
+    - name: "Install {{ auto_upgrade_script }}"
+      ansible.builtin.copy:
+        dest: "{{ auto_upgrade_script }}"
+        src: "{{ role_path }}/files/archlinux-auto-upgrade.sh"
+        owner: root
+        group: root
+        mode: "0755"

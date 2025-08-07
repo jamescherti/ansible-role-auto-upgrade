@@ -19,4 +19,4 @@ auto_upgrade_debian_apt_dist_upgrade: false
 auto_upgrade_debian_apt_autoremove: false
 
 # Additionally perform `apt-get clean` after the standard upgrade
-auto_upgrade_debian_apt_clean: true
+auto_upgrade_clean: true
