@@ -7,7 +7,7 @@ The *auto-upgrade* Ansible role automates regular upgrades of supported operatin
 
 ## License
 
-Copyright (c) 2025 [James Cherti](https://www.jamescherti.com).
+Copyright (c) 2025-2026 [James Cherti](https://www.jamescherti.com).
 
 Distributed under terms of the MIT license.
 
