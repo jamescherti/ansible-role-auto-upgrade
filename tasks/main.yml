@@ -1,9 +1,9 @@
 ---
 
 - name: Fail if operating system is not supported
-  when: ansible_os_family not in ["Debian", "Archlinux"]
+  when: ansible_facts.os_family not in ["Debian", "Archlinux"]
   ansible.builtin.fail:
-    msg: "Operating system family not supported: {{ ansible_os_family }}"
+    msg: "Operating system family not supported: {{ ansible_facts.os_family }}"
 
 - name: Delete /etc/cron.daily/60-auto-upgrade
   when: auto_upgrade_cron_script != "/etc/cron.daily/60-auto-upgrade"
@@ -21,13 +21,13 @@
       # Clean the packages in /var/cache/
       CLEAN_PACKAGES={{ '1' if auto_upgrade_clean else '0' }}
 
-      {% if ansible_os_family == "Debian" -%}
+      {% if ansible_facts.os_family == "Debian" -%}
       DEBIAN_APT_DIST_UPGRADE={{ '1' if auto_upgrade_debian_apt_dist_upgrade else '0' }}
       DEBIAN_APT_AUTOREMOVE={{ '1' if auto_upgrade_debian_apt_autoremove else '0' }}
       {% endif %}
 
 - name: "File {{ auto_upgrade_cron_script }}"
-  when: auto_upgrade_cron_script != "" and (ansible_os_family != "Debian" or not auto_upgrade_debian_unattended_upgrades | bool)
+  when: auto_upgrade_cron_script != "" and (ansible_facts.os_family != "Debian" or not auto_upgrade_debian_unattended_upgrades | bool)
   ansible.builtin.copy:
     dest: "{{ auto_upgrade_cron_script }}"
     owner: root
@@ -38,9 +38,9 @@
       exec {{ auto_upgrade_script }} >/dev/null
 
 - name: Import Tasks from debian.yaml
-  when: ansible_os_family == "Debian"
+  when: ansible_facts.os_family == "Debian"
   ansible.builtin.import_tasks: "debian.yaml"
 
 - name: Import Tasks from archlinux.yaml
-  when: ansible_os_family == "Archlinux"
+  when: ansible_facts.os_family == "Archlinux"
   ansible.builtin.import_tasks: "archlinux.yaml"
