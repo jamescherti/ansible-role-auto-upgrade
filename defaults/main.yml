@@ -20,3 +20,14 @@ auto_upgrade_debian_apt_autoremove: false
 
 # Additionally perform `apt-get clean` after the standard upgrade
 auto_upgrade_clean: true
+
+auto_upgrade_debian_unattended_automatic_reboot_time: "02:00"
+auto_upgrade_debian_unattended_automatic_reboot: false
+auto_upgrade_debian_unattended_automatic_reboot_with_users: false
+
+auto_upgrade_debian_unattended_upgrades_origin:
+  - "origin=Debian,codename=${distro_codename}"
+  - "origin=Debian,codename=${distro_codename}-updates"
+  - "origin=Debian,codename=${distro_codename},label=Debian"
+  - "origin=Debian,codename=${distro_codename},label=Debian-Security"
+  - "origin=Debian,codename=${distro_codename}-security,label=Debian-Security"
