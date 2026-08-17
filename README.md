@@ -17,4 +17,4 @@ Please [star ansible-role-auto-upgrade on GitHub](https://github.com/jamescherti
 
 ## Links
 
-- The GitHub repository of 'auto-upgrade': https://github.com/jamescherti/ansible-role-auto-upgrade
+- [The GitHub repository of 'auto-upgrade'](https://github.com/jamescherti/ansible-role-auto-upgrade)
