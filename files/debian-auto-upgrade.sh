@@ -71,7 +71,9 @@ main() {
 
   if [[ $DEBIAN_APT_AUTOREMOVE -ne 0 ]]; then
     run apt-get autoremove --purge -y
+  fi
 
+  if [[ $DEBIAN_APT_PURGE_RESIDUAL_CONFIG -ne 0 ]]; then
     # Remove residual configuration files belonging to packages that have
     # already been uninstalled. It does not remove currently installed packages.
     run apt-get purge -y "~c"

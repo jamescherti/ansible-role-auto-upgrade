@@ -48,6 +48,7 @@
       {% if ansible_facts.os_family == "Debian" -%}
       DEBIAN_APT_DIST_UPGRADE={{ '1' if auto_upgrade_debian_apt_dist_upgrade else '0' }}
       DEBIAN_APT_AUTOREMOVE={{ '1' if auto_upgrade_debian_apt_autoremove else '0' }}
+      DEBIAN_APT_PURGE_RESIDUAL_CONFIG={{ '1' if auto_upgrade_debian_purge_residual_config else '0' }}
       {% endif %}
 
 - name: "File {{ auto_upgrade_cron_script }}"

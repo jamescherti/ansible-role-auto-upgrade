@@ -42,6 +42,10 @@ auto_upgrade_debian_apt_dist_upgrade: false
 # Additionally perform `apt-get autoremove` after the standard upgrade
 auto_upgrade_debian_apt_autoremove: false
 
+# Remove residual configuration files belonging to packages that have already
+# been uninstalled. It does not remove currently installed packages.
+auto_upgrade_debian_purge_residual_config: false
+
 # Additionally perform `apt-get clean` after the standard upgrade
 auto_upgrade_clean: true
 
