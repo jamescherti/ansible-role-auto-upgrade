@@ -71,11 +71,16 @@ main() {
 
   if [[ $DEBIAN_APT_AUTOREMOVE -ne 0 ]]; then
     run apt-get autoremove --purge -y
+
+    # Remove residual configuration files belonging to packages that have
+    # already been uninstalled. It does not remove currently installed packages.
+    run apt-get purge -y "~c"
   fi
 
   if [[ $CLEAN_PACKAGES -ne 0 ]]; then
+    # Removes cached .deb packages that can no longer be downloaded from
+    # configured repositories.
     run apt-get autoclean -y
-    run apt-get purge -y "~c"
   fi
 }
 
