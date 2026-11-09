@@ -74,7 +74,8 @@ main() {
   fi
 
   if [[ $CLEAN_PACKAGES -ne 0 ]]; then
-    run apt-get clean -y
+    run apt-get autoclean -y
+    run apt-get purge -y "~c"
   fi
 }
 
