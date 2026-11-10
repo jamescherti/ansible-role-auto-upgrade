@@ -7,8 +7,6 @@ The [ansible-role-auto-upgrade](https://github.com/jamescherti/ansible-role-auto
 - Debian-based systems (e.g., Ubuntu, Debian, Linux Mint). This role provides a simpler alternative to [unattended-upgrades](https://wiki.debian.org/UnattendedUpgrades) for applying system updates.
 - Arch Linux
 
-(In future versions, Arch Linux and Gentoo will also be supported.)
-
 ## License
 
 Copyright (c) 2025-2026 [James Cherti](https://www.jamescherti.com).
@@ -21,4 +19,13 @@ Please [star ansible-role-auto-upgrade on GitHub](https://github.com/jamescherti
 
 ## Links
 
-- [The GitHub repository of 'auto-upgrade'](https://github.com/jamescherti/ansible-role-auto-upgrade)
+- [ansible-auto-upgrade @GitHub](https://github.com/jamescherti/ansible-role-auto-upgrade)
+
+Other projects by the same author:
+
+- [ansible-role-apt](https://github.com/jamescherti/ansible-role-apt)
+- [ansible-auto-upgrade](https://github.com/jamescherti/ansible-role-auto-upgrade)
+- [ansible-role-tuned](https://github.com/jamescherti/ansible-role-tuned)
+- [ansible-role-flatpak](https://github.com/jamescherti/ansible-role-flatpak)
+- [ansible-role-reniced](https://github.com/jamescherti/ansible-role-reniced)
+- [ansible-role-gitolite](https://github.com/jamescherti/ansible-role-gitolite)
